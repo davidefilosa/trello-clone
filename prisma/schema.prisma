@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Board {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  orgId         String
+  title         String
+  imageId       String
+  imageThumbUrl String @db.String
+  imageFullUrl  String @db.String
+  imageUserName String @db.String
+  imageLinkHTML String @db.String
+
+  lists List[]
+
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model List {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  order Int
+
+  borderId String @db.ObjectId
+  border Board @relation(fields: [borderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+}
